@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passion for Pets | Love, Care & Everything Pets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #7C5CFC;
+      --purple-light: #EDE8FF;
+      --purple-dark: #5A3FD6;
+      --yellow: #F5C542;
+      --yellow-light: #FFF8E1;
+      --orange: #FF8A5C;
+      --pink: #FF6B9D;
+      --bg: #F8F5FF;
+      --white: #ffffff;
+      --text: #2D2B3D;
+      --text-light: #6E6B7B;
+      --radius: 24px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Nunito', sans-serif; color: var(--text); background: var(--bg); overflow-x: hidden; }
+    .script { font-family: 'Caveat', cursive; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(3deg); }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(-2deg); }
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes drawLine {
+      from { stroke-dashoffset: 200; }
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-20px); }
+      60% { transform: translateY(-10px); }
+    }
+    @keyframes pawWalk {
+      0% { opacity: 0; transform: translateY(10px) rotate(-20deg); }
+      20% { opacity: 1; transform: translateY(0) rotate(0deg); }
+      80% { opacity: 1; transform: translateY(0) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(-10px) rotate(20deg); }
+    }
+
+    .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+    .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== DOODLE SVGs ===== */
+    .doodle { position: absolute; pointer-events: none; z-index: 1; }
+    .doodle svg { width: 100%; height: 100%; }
+    .doodle-squiggle { stroke: var(--purple); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-dasharray: 200; animation: drawLine 2s ease forwards; }
+    .doodle-star { fill: var(--yellow); }
+
+    /* ===== FLOATING BADGES ===== */
+    .badge {
+      display: inline-block; padding: .4rem 1rem; border-radius: 50px;
+      font-size: .8rem; font-weight: 700; animation: float 4s ease-in-out infinite;
+      box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    }
+    .badge-purple { background: var(--purple); color: #fff; }
+    .badge-yellow { background: var(--yellow); color: var(--text); }
+    .badge-pink { background: var(--pink); color: #fff; }
+    .badge-orange { background: var(--orange); color: #fff; }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 4%; background: rgba(248,245,255,.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--purple-light);
+    }
+    .logo {
+      font-size: 1.5rem; font-weight: 800; color: var(--purple);
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .logo .paw { font-size: 1.8rem; animation: wiggle 2s ease-in-out infinite; }
+    .logo .script { color: var(--yellow); font-size: 1.8rem; }
+    nav ul { list-style: none; display: flex; gap: .5rem; align-items: center; }
+    nav li a {
+      text-decoration: none; color: var(--text); font-weight: 700;
+      padding: .5rem 1.2rem; border-radius: 50px; border: 2px solid transparent;
+      transition: all .25s; font-size: .9rem;
+    }
+    nav li a:hover { border-color: var(--purple-light); background: var(--purple-light); }
+    .nav-cta {
+      background: var(--purple) !important; color: #fff !important;
+      border-color: var(--purple) !important; border-radius: 50px;
+      transition: all .25s;
+    }
+    .nav-cta:hover { background: var(--purple-dark) !important; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124,92,252,.3); }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 7rem 4% 4rem; position: relative; overflow: hidden;
+      background: linear-gradient(160deg, var(--bg) 0%, var(--purple-light) 50%, #FFF8E1 100%);
+    }
+    .hero-inner {
+      max-width: 1200px; margin: auto; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .hero-text { position: relative; z-index: 2; }
+    .hero-text h1 {
+      font-size: 3.6rem; font-weight: 800; line-height: 1.15;
+      margin-bottom: 1.2rem; animation: slideInLeft .8s ease-out;
+    }
+    .hero-text h1 .script {
+      color: var(--purple); font-size: 4.2rem; display: inline-block;
+      position: relative;
+    }
+    .hero-text h1 .script::after {
+      content: ''; position: absolute; bottom: 2px; left: 0; right: 0;
+      height: 12px; background: var(--yellow); opacity: .4; border-radius: 4px;
+      z-index: -1;
+    }
+    .hero-text h1 .highlight-yellow {
+      color: var(--text); position: relative; display: inline-block;
+    }
+    .hero-text h1 .highlight-yellow::after {
+      content: ''; position: absolute; bottom: 4px; left: -4px; right: -4px;
+      height: 14px; background: var(--yellow); opacity: .5; border-radius: 4px;
+      z-index: -1; transform: rotate(-1deg);
+    }
+    .hero-text p {
+      font-size: 1.15rem; color: var(--text-light); line-height: 1.7;
+      margin-bottom: 2rem; max-width: 480px;
+      animation: slideInLeft .8s ease-out .2s both;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; animation: slideInLeft .8s ease-out .4s both; }
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .9rem 2rem; border-radius: 50px; text-decoration: none;
+      font-weight: 700; font-size: 1rem; transition: all .3s; border: none; cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--purple); color: #fff;
+      box-shadow: 0 4px 15px rgba(124,92,252,.3);
+    }
+    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(124,92,252,.4); }
+    .btn-secondary {
+      background: var(--white); color: var(--purple);
+      border: 2.5px solid var(--purple);
+    }
+    .btn-secondary:hover { background: var(--purple-light); transform: translateY(-3px); }
+    .btn .arrow { font-size: 1.2rem; transition: transform .3s; }
+    .btn:hover .arrow { transform: translateX(4px); }
+
+    /* Hero visual side */
+    .hero-visual {
+      position: relative; display: flex; align-items: center;
+      justify-content: center; animation: slideInRight .8s ease-out;
+    }
+    .hero-blob {
+      width: 420px; height: 420px; border-radius: 50% 40% 50% 40%;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      display: flex; align-items: center; justify-content: center;
+      position: relative; animation: floatSlow 6s ease-in-out infinite;
+    }
+    .hero-blob-emoji { font-size: 12rem; filter: drop-shadow(0 10px 30px rgba(0,0,0,.15)); }
+    .hero-float-badge {
+      position: absolute; z-index: 3;
+    }
+    .hero-float-badge:nth-child(2) { top: 10%; right: -10%; animation-delay: 0s; }
+    .hero-float-badge:nth-child(3) { bottom: 15%; right: -5%; animation-delay: 1s; }
+    .hero-float-badge:nth-child(4) { top: 5%; left: -5%; animation-delay: 2s; }
+    .hero-float-badge:nth-child(5) { bottom: 5%; left: -10%; animation-delay: .5s; }
+
+    /* Doodle decorations in hero */
+    .hero-doodle-1 { top: 15%; left: 3%; width: 80px; height: 80px; animation: spin 12s linear infinite; }
+    .hero-doodle-2 { bottom: 20%; right: 5%; width: 60px; height: 60px; animation: float 5s ease-in-out infinite; }
+    .hero-doodle-3 { top: 25%; right: 30%; width: 40px; height: 40px; animation: floatSlow 4s ease-in-out infinite 1s; }
+    .hero-paw-trail { position: absolute; bottom: 8%; left: 10%; display: flex; gap: 2rem; z-index: 1; }
+    .hero-paw-trail span {
+      font-size: 1.5rem; opacity: .2; animation: pawWalk 3s ease-in-out infinite;
+    }
+    .hero-paw-trail span:nth-child(1) { animation-delay: 0s; transform: rotate(-20deg); }
+    .hero-paw-trail span:nth-child(2) { animation-delay: .4s; transform: rotate(15deg); }
+    .hero-paw-trail span:nth-child(3) { animation-delay: .8s; transform: rotate(-10deg); }
+    .hero-paw-trail span:nth-child(4) { animation-delay: 1.2s; transform: rotate(20deg); }
+    .hero-paw-trail span:nth-child(5) { animation-delay: 1.6s; transform: rotate(-15deg); }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 6rem 4%; position: relative; }
+    .section-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-header h2 { font-size: 2.6rem; font-weight: 800; margin-bottom: .5rem; }
+    .section-header h2 .script { color: var(--purple); font-size: 3rem; }
+    .section-header p { color: var(--text-light); font-size: 1.1rem; max-width: 520px; margin: auto; }
+    .section-squiggle {
+      display: block; margin: .5rem auto 0; width: 120px;
+    }
+
+    /* ===== SERVICES ===== */
+    .services { background: var(--white); position: relative; }
+    .services-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; max-width: 1100px; margin: auto;
+    }
+    .service-card {
+      padding: 2.2rem 1.8rem; border-radius: var(--radius);
+      text-align: center; transition: all .35s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative; overflow: hidden; cursor: pointer;
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: var(--radius); border: 2.5px solid transparent;
+      transition: border-color .3s;
+    }
+    .service-card:hover { transform: translateY(-8px); }
+    .service-card:hover::before { border-color: var(--purple); }
+
+    .service-card.purple-bg { background: var(--purple-light); }
+    .service-card.yellow-bg { background: var(--yellow-light); }
+    .service-card.white-bg { background: #F5F5F5; }
+    .service-card.purple-solid { background: var(--purple); color: #fff; }
+    .service-card.purple-solid p { color: rgba(255,255,255,.8); }
+    .service-card.yellow-solid { background: var(--yellow); }
+
+    .service-icon {
+      width: 70px; height: 70px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin: 0 auto 1.2rem;
+      transition: transform .3s;
+    }
+    .service-card:hover .service-icon { transform: scale(1.15) rotate(5deg); }
+    .service-icon.purple { background: var(--purple); color: #fff; }
+    .service-icon.yellow { background: var(--yellow); }
+    .service-icon.white { background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+    .service-icon.outline { background: transparent; border: 2.5px solid var(--purple); }
+    .service-icon.pink { background: var(--pink); color: #fff; }
+    .service-icon.orange { background: var(--orange); color: #fff; }
+
+    .service-card h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: .4rem; }
+    .service-card p { font-size: .9rem; color: var(--text-light); line-height: 1.6; }
+
+    /* ===== ABOUT ===== */
+    .about {
+      background: linear-gradient(160deg, var(--purple-light) 0%, var(--bg) 50%, var(--yellow-light) 100%);
+      position: relative;
+    }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; max-width: 1100px; margin: auto; align-items: center;
+    }
+    .about-visual { position: relative; }
+    .about-blob {
+      width: 100%; aspect-ratio: 1; border-radius: 50% 40% 55% 45%;
+      background: var(--purple); display: flex; align-items: center;
+      justify-content: center; position: relative;
+      animation: floatSlow 7s ease-in-out infinite;
+    }
+    .about-blob-emoji { font-size: 10rem; filter: drop-shadow(0 8px 20px rgba(0,0,0,.1)); }
+    .about-float-card {
+      position: absolute; background: var(--white); border-radius: 16px;
+      padding: 1rem 1.4rem; box-shadow: 0 8px 30px rgba(0,0,0,.1);
+      display: flex; align-items: center; gap: .6rem;
+      animation: float 4s ease-in-out infinite;
+    }
+    .about-float-card:nth-child(2) {
+      top: -5%; right: -10%; animation-delay: 0s;
+    }
+    .about-float-card:nth-child(3) {
+      bottom: 5%; left: -10%; animation-delay: 1.5s;
+    }
+    .about-float-card .icon-circle {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    }
+    .about-float-card .icon-circle.purple { background: var(--purple-light); }
+    .about-float-card .icon-circle.yellow { background: var(--yellow-light); }
+    .about-float-card span { font-weight: 700; font-size: .9rem; }
+
+    .about-text h2 { font-size: 2.4rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; }
+    .about-text h2 .script { color: var(--purple); font-size: 2.8rem; }
+    .about-text p { color: var(--text-light); line-height: 1.8; margin-bottom: 1.2rem; font-size: 1.05rem; }
+    .stats-row { display: flex; gap: 2rem; margin-top: 2rem; }
+    .stat-item { text-align: center; }
+    .stat-item .num {
+      font-size: 2.2rem; font-weight: 800; color: var(--purple);
+      display: block;
+    }
+    .stat-item .label { font-size: .85rem; color: var(--text-light); font-weight: 600; }
+
+    /* ===== TEAM ===== */
+    .team { background: var(--purple); color: #fff; position: relative; overflow: hidden; }
+    .team .section-header h2 { color: #fff; }
+    .team .section-header h2 .script { color: var(--yellow); }
+    .team .section-header p { color: rgba(255,255,255,.7); }
+    .team-grid { display: flex; gap: 2rem; max-width: 1000px; margin: auto; justify-content: center; flex-wrap: wrap; }
+    .team-member { text-align: center; animation: float 5s ease-in-out infinite; }
+    .team-member:nth-child(2) { animation-delay: .5s; }
+    .team-member:nth-child(3) { animation-delay: 1s; }
+    .team-member:nth-child(4) { animation-delay: 1.5s; }
+    .team-avatar {
+      width: 100px; height: 100px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; margin: 0 auto .8rem;
+      border: 4px solid rgba(255,255,255,.3);
+    }
+    .team-avatar.bg1 { background: var(--yellow); }
+    .team-avatar.bg2 { background: var(--orange); }
+    .team-avatar.bg3 { background: var(--pink); }
+    .team-avatar.bg4 { background: var(--purple-light); }
+    .team-member h4 { font-weight: 700; font-size: 1rem; }
+    .team-member p { font-size: .8rem; opacity: .7; }
+    .team-doodle { position: absolute; opacity: .1; }
+    .team-doodle-1 { top: 10%; left: 5%; font-size: 4rem; animation: spin 15s linear infinite; }
+    .team-doodle-2 { bottom: 10%; right: 5%; font-size: 3rem; animation: float 6s ease-in-out infinite; }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials { background: var(--white); }
+    .testimonial-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; max-width: 1100px; margin: auto;
+    }
+    .testimonial-card {
+      background: var(--bg); border-radius: var(--radius); padding: 2rem;
+      position: relative; transition: all .3s;
+    }
+    .testimonial-card:hover { transform: translateY(-6px); box-shadow: 0 12px 35px rgba(124,92,252,.1); }
+    .testimonial-card:nth-child(2) { background: var(--purple); color: #fff; }
+    .testimonial-card:nth-child(2) p { color: rgba(255,255,255,.85); }
+    .testimonial-card:nth-child(2) .stars { color: var(--yellow); }
+    .testimonial-card:nth-child(2) .t-author span { color: rgba(255,255,255,.6); }
+    .stars { color: var(--yellow); font-size: 1.1rem; margin-bottom: .8rem; letter-spacing: 2px; }
+    .testimonial-card p { color: var(--text-light); line-height: 1.7; margin-bottom: 1.2rem; font-size: .95rem; }
+    .t-author { display: flex; align-items: center; gap: .8rem; }
+    .t-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; background: var(--purple-light);
+    }
+    .testimonial-card:nth-child(2) .t-avatar { background: rgba(255,255,255,.2); }
+    .t-author h4 { font-size: .95rem; font-weight: 700; }
+    .t-author span { font-size: .8rem; color: var(--text-light); }
+    .quote-doodle {
+      position: absolute; top: 1rem; right: 1.5rem;
+      font-size: 3rem; opacity: .1; font-family: serif;
+    }
+
+    /* ===== BLOG ===== */
+    .blog { background: var(--bg); }
+    .blog-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; max-width: 1100px; margin: auto;
+    }
+    .blog-card {
+      background: var(--white); border-radius: var(--radius);
+      overflow: hidden; transition: all .35s; border: 2px solid transparent;
+    }
+    .blog-card:hover { transform: translateY(-6px); border-color: var(--purple-light); box-shadow: 0 12px 35px rgba(124,92,252,.08); }
+    .blog-thumb {
+      height: 200px; display: flex; align-items: center;
+      justify-content: center; font-size: 5rem; position: relative;
+    }
+    .blog-thumb.t1 { background: linear-gradient(135deg, var(--purple-light), #ddd5ff); }
+    .blog-thumb.t2 { background: linear-gradient(135deg, var(--yellow-light), #ffe9a0); }
+    .blog-thumb.t3 { background: linear-gradient(135deg, #FFE5EC, #ffd0df); }
+    .blog-body { padding: 1.5rem; }
+    .blog-tag {
+      display: inline-block; padding: .25rem .8rem; border-radius: 50px;
+      font-size: .75rem; font-weight: 700; margin-bottom: .6rem;
+    }
+    .blog-tag.purple { background: var(--purple-light); color: var(--purple); }
+    .blog-tag.yellow { background: var(--yellow-light); color: #B8860B; }
+    .blog-tag.pink { background: #FFE5EC; color: var(--pink); }
+    .blog-body h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: .4rem; line-height: 1.4; }
+    .blog-body p { font-size: .88rem; color: var(--text-light); line-height: 1.5; }
+    .read-more {
+      display: inline-flex; align-items: center; gap: .3rem;
+      color: var(--purple); font-weight: 700; font-size: .85rem;
+      text-decoration: none; margin-top: .8rem; transition: gap .3s;
+    }
+    .read-more:hover { gap: .6rem; }
+
+    /* ===== CTA BANNER ===== */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: #fff; text-align: center; padding: 5rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .cta-banner h2 { font-size: 2.8rem; font-weight: 800; margin-bottom: .6rem; }
+    .cta-banner h2 .script { color: var(--yellow); font-size: 3.2rem; }
+    .cta-banner p { font-size: 1.1rem; opacity: .85; margin-bottom: 2rem; max-width: 500px; margin-inline: auto; }
+    .btn-white { background: var(--white); color: var(--purple); font-weight: 800; }
+    .btn-white:hover { background: var(--yellow); color: var(--text); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,.15); }
+    .cta-doodle { position: absolute; opacity: .1; font-size: 5rem; }
+    .cta-doodle-1 { top: 15%; left: 8%; animation: float 5s ease-in-out infinite; }
+    .cta-doodle-2 { bottom: 15%; right: 8%; animation: floatSlow 6s ease-in-out infinite; }
+    .cta-doodle-3 { top: 50%; left: 20%; animation: spin 20s linear infinite; }
+    .cta-doodle-4 { bottom: 25%; right: 20%; animation: wiggle 3s ease-in-out infinite; }
+
+    /* ===== NEWSLETTER ===== */
+    .newsletter {
+      background: var(--yellow); text-align: center; position: relative; overflow: hidden;
+    }
+    .newsletter h2 { font-size: 2.4rem; font-weight: 800; margin-bottom: .5rem; }
+    .newsletter h2 .script { color: var(--purple); font-size: 2.8rem; }
+    .newsletter > p { color: var(--text-light); margin-bottom: 2rem; font-size: 1.05rem; }
+    .newsletter-form {
+      display: flex; gap: .5rem; max-width: 480px; margin: auto;
+      position: relative; z-index: 2;
+    }
+    .newsletter-form input {
+      flex: 1; padding: 1rem 1.4rem; border: 3px solid var(--text);
+      border-radius: 50px; font-size: 1rem; font-family: inherit;
+      outline: none; background: var(--white); font-weight: 600;
+    }
+    .newsletter-form input:focus { border-color: var(--purple); }
+    .newsletter-form .btn { border: 3px solid var(--text); }
+    .newsletter-doodle { position: absolute; opacity: .15; }
+    .newsletter-doodle-1 { top: 10%; left: 5%; font-size: 3rem; animation: float 4s ease-in-out infinite; }
+    .newsletter-doodle-2 { bottom: 10%; right: 5%; font-size: 4rem; animation: wiggle 3s ease-in-out infinite; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--text); color: rgba(255,255,255,.6);
+      padding: 4rem 4% 2rem; position: relative;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 2.5rem; max-width: 1100px; margin: auto;
+    }
+    .footer-col h4 { color: #fff; margin-bottom: 1.2rem; font-size: 1rem; }
+    .footer-brand .logo-footer { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: .8rem; }
+    .footer-brand .logo-footer .script { color: var(--yellow); }
+    .footer-brand p { font-size: .9rem; line-height: 1.6; }
+    .footer-col a {
+      display: block; color: rgba(255,255,255,.6); text-decoration: none;
+      margin-bottom: .6rem; font-size: .9rem; transition: all .2s;
+    }
+    .footer-col a:hover { color: var(--yellow); transform: translateX(4px); }
+    .footer-bottom {
+      text-align: center; margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,.1); font-size: .85rem;
+    }
+    .footer-socials { display: flex; gap: .8rem; margin-top: 1rem; }
+    .footer-socials a {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(255,255,255,.08); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1rem; margin: 0;
+    }
+    .footer-socials a:hover { background: var(--purple); color: #fff; transform: translateY(-2px); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; }
+      .hero-text p { margin-inline: auto; }
+      .hero-btns { justify-content: center; }
+      .hero-visual { display: none; }
+      .hero-text h1 { font-size: 2.6rem; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { grid-template-columns: 1fr; text-align: center; }
+      .about-visual { max-width: 300px; margin: auto; }
+      .stats-row { justify-content: center; }
+      .testimonial-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      nav ul { display: none; }
+    }
+    @media (max-width: 600px) {
+      .services-grid { grid-template-columns: 1fr; }
+      .hero-text h1 { font-size: 2.2rem; }
+      .newsletter-form { flex-direction: column; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">
+      <span class="paw">🐾</span>
+      Passion <span class="script">for Pets</span>
+    </div>
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#stories">Stories</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#contact" class="nav-cta">Contact Us</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <!-- Doodle decorations -->
+    <div class="doodle hero-doodle-1">
+      <svg viewBox="0 0 80 80"><polygon class="doodle-star" points="40,5 50,30 78,30 55,48 63,75 40,58 17,75 25,48 2,30 30,30"/></svg>
+    </div>
+    <div class="doodle hero-doodle-2">
+      <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="#F5C542" stroke-width="3" stroke-dasharray="8 6"/></svg>
+    </div>
+    <div class="doodle hero-doodle-3">
+      <svg viewBox="0 0 40 40"><polygon class="doodle-star" points="20,2 25,15 40,15 28,24 32,38 20,29 8,38 12,24 0,15 15,15"/></svg>
+    </div>
+    <div class="hero-paw-trail">
+      <span>🐾</span><span>🐾</span><span>🐾</span><span>🐾</span><span>🐾</span>
+    </div>
+
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1>The best place to <span class="script">love</span> and <span class="highlight-yellow">care</span> for pets</h1>
+        <p>Discover premium grooming, boarding, training, and wellness services designed to keep your furry family members happy and healthy.</p>
+        <div class="hero-btns">
+          <a href="#services" class="btn btn-primary">Get started <span class="arrow">&#10230;</span></a>
+          <a href="#about" class="btn btn-secondary">Our Story</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-blob">
+          <span class="hero-blob-emoji">🐕</span>
+        </div>
+        <div class="hero-float-badge badge badge-yellow" style="animation: float 4s ease-in-out infinite;">
+          #pawsome
+        </div>
+        <div class="hero-float-badge badge badge-pink" style="animation: float 4s ease-in-out infinite 1s;">
+          #furrylife
+        </div>
+        <div class="hero-float-badge badge badge-purple" style="animation: float 4s ease-in-out infinite 2s;">
+          #petlove
+        </div>
+        <div class="hero-float-badge badge badge-orange" style="animation: float 4s ease-in-out infinite .5s;">
+          #happy
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="section-header">
+      <h2>Our <span class="script">interactive</span> services</h2>
+      <svg class="section-squiggle" viewBox="0 0 120 12" fill="none"><path d="M2 6c10-8 20 8 30 0s20 8 30 0 20 8 30 0 20 8 26 0" stroke="#7C5CFC" stroke-width="3" stroke-linecap="round"/></svg>
+      <p>Everything your pet needs for a happy, healthy life</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card purple-bg animate-on-scroll">
+        <div class="service-icon purple">🛁</div>
+        <h3>Grooming & Spa</h3>
+        <p>Full-service grooming from baths to breed-specific cuts. Pamper your pet!</p>
+      </div>
+      <div class="service-card purple-solid animate-on-scroll" style="transition-delay:.1s">
+        <div class="service-icon white">🏠</div>
+        <h3>Pet Boarding</h3>
+        <p>A cozy home away from home with 24/7 care, play areas, and cuddle time.</p>
+      </div>
+      <div class="service-card yellow-bg animate-on-scroll" style="transition-delay:.2s">
+        <div class="service-icon orange">🩺</div>
+        <h3>Wellness Checks</h3>
+        <p>Routine screenings, nutrition plans, and preventative care that keeps them thriving.</p>
+      </div>
+      <div class="service-card yellow-solid animate-on-scroll" style="transition-delay:.3s">
+        <div class="service-icon outline">🎓</div>
+        <h3>Training Classes</h3>
+        <p>Positive reinforcement training for all ages. From basics to impressive tricks!</p>
+      </div>
+      <div class="service-card white-bg animate-on-scroll" style="transition-delay:.4s">
+        <div class="service-icon pink">🚶</div>
+        <h3>Dog Walking</h3>
+        <p>GPS-tracked daily walks tailored to your dog's energy and personality.</p>
+      </div>
+      <div class="service-card purple-bg animate-on-scroll" style="transition-delay:.5s">
+        <div class="service-icon yellow">🛒</div>
+        <h3>Pet Shop</h3>
+        <p>Curated premium food, toys, and accessories. Only the best for your bestie.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-grid">
+      <div class="about-visual">
+        <div class="about-blob">
+          <span class="about-blob-emoji">🐱</span>
+        </div>
+        <div class="about-float-card">
+          <div class="icon-circle purple">🏆</div>
+          <span>Top Rated Care</span>
+        </div>
+        <div class="about-float-card">
+          <div class="icon-circle yellow">❤️</div>
+          <span>5,000+ Happy Pets</span>
+        </div>
+      </div>
+      <div class="about-text">
+        <h2>Started by <span class="script">pet lovers,</span> built for pet lovers</h2>
+        <p>Founded in 2018, Passion for Pets began as a tiny neighborhood grooming studio. Today, we're a full-service pet care destination trusted by thousands of families.</p>
+        <p>Our certified team shares one thing in common &mdash; an unwavering love for animals. Every service is designed with your pet's comfort and joy in mind.</p>
+        <div class="stats-row">
+          <div class="stat-item">
+            <span class="num">5,000+</span>
+            <span class="label">Happy Families</span>
+          </div>
+          <div class="stat-item">
+            <span class="num">15+</span>
+            <span class="label">Expert Staff</span>
+          </div>
+          <div class="stat-item">
+            <span class="num">8</span>
+            <span class="label">Years of Love</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="team">
+    <div class="team-doodle team-doodle-1">🐾</div>
+    <div class="team-doodle team-doodle-2">⭐</div>
+    <div class="section-header">
+      <h2>Meet our <span class="script">amazing</span> team</h2>
+      <p>Certified professionals who truly love what they do</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-member">
+        <div class="team-avatar bg1">👩‍⚕️</div>
+        <h4>Dr. Sarah Kim</h4>
+        <p>Wellness Specialist</p>
+      </div>
+      <div class="team-member">
+        <div class="team-avatar bg2">🧑‍🎓</div>
+        <h4>Jake Morrison</h4>
+        <p>Head Trainer</p>
+      </div>
+      <div class="team-member">
+        <div class="team-avatar bg3">👩‍🎨</div>
+        <h4>Maria Chen</h4>
+        <p>Grooming Lead</p>
+      </div>
+      <div class="team-member">
+        <div class="team-avatar bg4">🧑‍💼</div>
+        <h4>Alex Rivera</h4>
+        <p>Boarding Manager</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="stories">
+    <div class="section-header">
+      <h2>Pet parent <span class="script">stories</span></h2>
+      <svg class="section-squiggle" viewBox="0 0 120 12" fill="none"><path d="M2 6c10-8 20 8 30 0s20 8 30 0 20 8 30 0 20 8 26 0" stroke="#F5C542" stroke-width="3" stroke-linecap="round"/></svg>
+      <p>Hear from the families who trust us with their fur babies</p>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card animate-on-scroll">
+        <div class="quote-doodle">&ldquo;</div>
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p>"Bailey used to hate baths. After one visit to Passion for Pets, she actually gets excited for grooming day!"</p>
+        <div class="t-author">
+          <div class="t-avatar">🐕</div>
+          <div>
+            <h4>Sarah M.</h4>
+            <span>Pet parent to Bailey</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card animate-on-scroll" style="transition-delay:.15s">
+        <div class="quote-doodle">&ldquo;</div>
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p>"The boarding service gave us total peace of mind on vacation. Daily photo updates and Mr. Biscuits was so relaxed!"</p>
+        <div class="t-author">
+          <div class="t-avatar">🐈</div>
+          <div>
+            <h4>James & Lin T.</h4>
+            <span>Pet parent to Mr. Biscuits</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card animate-on-scroll" style="transition-delay:.3s">
+        <div class="quote-doodle">&ldquo;</div>
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p>"Training transformed our rescue pup from anxious to confident. The trainers are incredibly patient!"</p>
+        <div class="t-author">
+          <div class="t-avatar">🐶</div>
+          <div>
+            <h4>Maria G.</h4>
+            <span>Pet parent to Luna</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="blog" id="blog">
+    <div class="section-header">
+      <h2>Read our <span class="script">blog</span></h2>
+      <svg class="section-squiggle" viewBox="0 0 120 12" fill="none"><path d="M2 6c10-8 20 8 30 0s20 8 30 0 20 8 30 0 20 8 26 0" stroke="#7C5CFC" stroke-width="3" stroke-linecap="round"/></svg>
+      <p>Tips, tricks, and adorable stories from the pet world</p>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card animate-on-scroll">
+        <div class="blog-thumb t1">🐶</div>
+        <div class="blog-body">
+          <span class="blog-tag purple">Dog Care</span>
+          <h3>5 Signs Your Dog Needs a Mental Health Day</h3>
+          <p>Just like us, dogs can feel stressed. Here's how to spot the signs.</p>
+          <a href="#" class="read-more">Read More <span class="arrow">&#10230;</span></a>
+        </div>
+      </div>
+      <div class="blog-card animate-on-scroll" style="transition-delay:.15s">
+        <div class="blog-thumb t2">🐱</div>
+        <div class="blog-body">
+          <span class="blog-tag yellow">Cat Care</span>
+          <h3>The Ultimate Guide to Indoor Cat Enrichment</h3>
+          <p>Keep your indoor kitty happy and stimulated with these expert ideas.</p>
+          <a href="#" class="read-more">Read More <span class="arrow">&#10230;</span></a>
+        </div>
+      </div>
+      <div class="blog-card animate-on-scroll" style="transition-delay:.3s">
+        <div class="blog-thumb t3">🐹</div>
+        <div class="blog-body">
+          <span class="blog-tag pink">Small Pets</span>
+          <h3>Caring for Your First Hamster: Complete Guide</h3>
+          <p>Everything you need to know for a happy, healthy little companion.</p>
+          <a href="#" class="read-more">Read More <span class="arrow">&#10230;</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-banner" id="contact">
+    <div class="cta-doodle cta-doodle-1">🐾</div>
+    <div class="cta-doodle cta-doodle-2">⭐</div>
+    <div class="cta-doodle cta-doodle-3">🦴</div>
+    <div class="cta-doodle cta-doodle-4">❤️</div>
+    <h2>Ready to give your pet <span class="script">the best?</span></h2>
+    <p>Book a free consultation and let's create a personalized care plan for your furry family member.</p>
+    <a href="#" class="btn btn-white">Book Free Consultation <span class="arrow">&#10230;</span></a>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter">
+    <div class="newsletter-doodle newsletter-doodle-1">🐾</div>
+    <div class="newsletter-doodle newsletter-doodle-2">🦴</div>
+    <h2>Join the <span class="script">pack!</span></h2>
+    <p>Get weekly pet tips, exclusive deals, and adorable stories in your inbox</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault(); this.querySelector('input').value='Thanks for joining! 🐾'; ">
+      <input type="email" placeholder="Enter your email..." required>
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col footer-brand">
+        <div class="logo-footer">🐾 Passion <span class="script">for Pets</span></div>
+        <p>Dedicated to providing exceptional care for every pet since 2018. Your furry family is our family.</p>
+        <div class="footer-socials">
+          <a href="#">&#9733;</a>
+          <a href="#">&#9829;</a>
+          <a href="#">&#9728;</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="#">Grooming & Spa</a>
+        <a href="#">Pet Boarding</a>
+        <a href="#">Wellness Checks</a>
+        <a href="#">Training Classes</a>
+        <a href="#">Dog Walking</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About Us</a>
+        <a href="#">Our Team</a>
+        <a href="#">Careers</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Get in Touch</h4>
+        <a href="#">hello@passionforpets.com</a>
+        <a href="#">(555) 123-4567</a>
+        <a href="#">123 Pet Lane, Pawsville</a>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Passion for Pets. All rights reserved. Made with ❤️ for pets everywhere.</div>
+  </footer>
+
+  <!-- Scroll animation script -->
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
